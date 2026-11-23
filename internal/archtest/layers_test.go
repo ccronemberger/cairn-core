@@ -70,7 +70,7 @@ func TestLayering(t *testing.T) {
 // cmd/server/wire.go (and the CLI commands that are their own roots).
 func TestCompositionRoot(t *testing.T) {
 	root := filepath.Join("..", "..", "cmd", "server")
-	allowed := map[string]bool{"wire.go": true, "migrate.go": true, "rotate_key.go": true, "attachments_cmd.go": true, "serve.go": true}
+	allowed := map[string]bool{"wire.go": true, "rotate_key.go": true, "attachments_cmd.go": true, "wire_basic.go": true}
 	entries, err := os.ReadDir(root)
 	if err != nil {
 		t.Fatal(err)
