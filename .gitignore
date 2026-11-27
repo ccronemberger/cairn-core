@@ -49,7 +49,10 @@ Thumbs.db
 # web/ and workers/sdk-python/ carry their own .gitignore files.
 # Local dev env + air live-reload build dir
 /dev.env
+/compose.env
 /tmp/
+/local-docs/
+/.certs/
 
 # Local matcher-calibration corpus (operator data; never commit)
 *match-corpus*.json
