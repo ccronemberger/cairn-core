@@ -50,40 +50,24 @@ discrete step in your upgrade pipeline.`,
 }
 
 func runServe(cmd *cobra.Command, _ []string) error {
-	cfg, err := config.Load()
-	if err != nil {
-		return err
-	}
-
-	logger := newLogger(cfg.Log)
-	slog.SetDefault(logger)
-
 	ctx, cancel := signal.NotifyContext(cmd.Context(), syscall.SIGINT, syscall.SIGTERM)
 	defer cancel()
 
-	// ------------------------------------------------------------------
-	// Database
-	// ------------------------------------------------------------------
-
-	pool, err := serveOpenDatabase(ctx, cfg, logger)
+	runtime, err := newRuntime(ctx)
 	if err != nil {
-		return err
+		return fmt.Errorf("runtime: %w", err)
 	}
-	defer pool.Close()
+	defer runtime.close()
 
-	// ------------------------------------------------------------------
-	// Schema version check / auto-migrate
-	// ------------------------------------------------------------------
-
-	if err := ensureSchema(ctx, logger, pool, cfg.Database.AutoMigrate); err != nil {
-		return err
-	}
+	var cfg = runtime.cfg
+	var logger = runtime.logger
+	var pool = runtime.pool
 
 	// ------------------------------------------------------------------
 	// Construct the application dependency graph
 	// ------------------------------------------------------------------
 
-	app, err := newApp(ctx, pool, cfg, logger)
+	app, err := newApp(ctx, runtime.pool, cfg, logger)
 	if err != nil {
 		return fmt.Errorf("wire app: %w", err)
 	}
