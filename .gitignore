@@ -49,6 +49,7 @@ Thumbs.db
 # web/ and workers/sdk-python/ carry their own .gitignore files.
 # Local dev env + air live-reload build dir
 /dev.env
+/compose.env
 /tmp/
 
 # Local matcher-calibration corpus (operator data; never commit)
@@ -74,3 +75,6 @@ AGENTS.md
 .gemini/
 GEMINI.md
 .github/copilot-instructions.md
+
+# Local development TLS certificates and CA private keys
+/.certs/
