@@ -142,7 +142,7 @@ Local dev runs the **supporting services in docker compose** and the **binaries
 on the host with live-reload** — separate shells:
 
 ```sh
-make dev-up                  # postgres + nats + minio + mailpit (compose)
+make dev-up                  # Postgres + NATS + Silo (minio) + Mailpit (compose)
 cp dev.env.example dev.env   # once
 make dev-server              # shell 2: Go server   (rebuilds on save)
 make dev-web                 # shell 3: SvelteKit dev server (vite HMR)
@@ -195,13 +195,13 @@ through the firewall. Regenerate the certificate if the LAN IP changes.
 For backend-only work, bring up the deps and run the binary directly:
 
 ```sh
-docker compose up -d                     # Postgres + MinIO + NATS
-export CAIRN_DATABASE_URL="postgres://cairn:cairn@localhost:5432/cairn?sslmode=disable"
-export CAIRN_AUTH_MASTER_ENCRYPTION_KEY="$(openssl rand -base64 32)"
-export CAIRN_INSTANCE_BOOTSTRAP_ADMIN_EMAIL="admin@example.com"
-export CAIRN_INSTANCE_BOOTSTRAP_ADMIN_PASSWORD="changeme"
-make tidy && make migrate-up && make run
+make dev-up
+[ -f dev.env ] || cp dev.env.example dev.env
+make run
 ```
+
+`make run` sources `dev.env` when present. The example env configures Silo and
+applies database migrations on startup.
 
 `make run -- config help` prints every `CAIRN_*` variable, its default, and
 whether it's required. NATS (`CAIRN_NATS_URL`) is optional — without it the
